@@ -1,4 +1,27 @@
 import pandas as pd
+import re
+import urllib
+from time import sleep
+#divisions are numbered
+south_teams = [2588, 2589, 2590, 2591, 2592, 2593, 2594]
+north_teams = [2581, 2582, 2583, 2584, 2585, 2586, 2587]
+
+#Find URLs for all teams
+def build_team_urls():
+    # Open the division webpage and extract the names of each team available.
+    for division in south_teams{
+        url_string = 'http://www.wchlonline.com/division/'+ str(division)
+        f = urllib.request.urlopen(url_string)
+        teams_source = f.read().decode('utf-8')
+        teams = dict(re.findall("www\.wchlonline\.com/team/(\w+)/(.+?)\",", teams_source))
+        # Using the names of the rosters, create the urls of each roster
+        roster_urls = []
+        for key in teams.keys():
+            # each roster webpage follows this general pattern.
+            roster_urls.append('http://www.wchlonline.com/team/' + key + '/' + teams[key])
+            teams[key] = str(teams[key])
+    return dict(zip(teams.values(), roster_urls))
+
 pd.read_html("https://www.wchlonline.com/team/32248/roster")[0].iloc[:,1:]
 
 import requests
