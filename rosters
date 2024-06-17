@@ -1,0 +1,24 @@
+import pandas as pd
+pd.read_html("https://www.wchlonline.com/team/32248/roster")[0].iloc[:,1:]
+
+import requests
+from bs4 import BeautifulSoup
+
+
+url = "https://www.wchlonline.com/team/32248/roster"
+soup = BeautifulSoup(requests.get(url).content, "html.parser")
+data = []
+for row in soup.select("#DataTable tbody tr"):
+    data.append({
+            "Player": row.a.text,
+            "Team": row.select_one("td>a").text,
+            "Position": row.select("td.text-left")[2].text.strip(),
+            "Points Matchday": row.select("td.text-right")[0].text.strip(),
+            "Market value": row.select("td.text-right")[1].text.strip(),
+            "Appearances": row.select("td.text-right")[2].text.strip(),
+            "Avrg. points": row.select("td.text-right")[3].text.strip(),
+            "Total points": row.select("td.text-right")[4].text.strip()
+        }
+    )
+data
+print(data)
